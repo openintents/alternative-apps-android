@@ -1,0 +1,3 @@
+include ':aXML'
+include ':androidLib'
+include ':mobile'

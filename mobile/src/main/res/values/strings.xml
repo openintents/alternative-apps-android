@@ -1,0 +1,44 @@
+<resources>
+
+    <!--  -->
+    <string name="app_name">Alternative Apps</string>
+    <string name="app_name_full">Alternative Apps (Android Package Explorer)</string>
+
+    <!--  -->
+    <string name="title_main">Alternative Apps</string>
+    <string name="title_package">Alternative Apps - %1$s</string>
+    <string name="title_settings">Alternative Apps - Settings </string>
+    <string name="title_about">Alternative Apps#8230; </string>
+    <string name="title_secret">Alternative Apps - Secret options</string>
+
+    <!-- Options Menu in Apex -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_share">Share your alternative apps</string>
+
+    <!-- Actions -->
+    <string name="action_sort">Sort</string>
+    <string name="action_sort_by_name">Sort by name</string>
+    <string name="action_sort_by_package">Sort by package</string>
+    <string name="action_sort_by_install">Last installed first</string>
+    <string name="action_sort_by_update">Last updated first</string>
+    <string name="action_export">Export manifest</string>
+    <string name="action_export_apk">Export APK</string>
+    <string name="action_explore_resources">Explore resources</string>
+    <string name="action_uninstall">Uninstall</string>
+    <string name="action_display_info">System App Info</string>
+    <string name="action_display_store">Google Play Store</string>
+    <string name="action_open">Open</string>
+    <string name="action_switch_background">Switch resources background color</string>
+    <string name="action_zoom_in">Zoom in</string>
+    <string name="action_zoom_out">Zoom out</string>
+    <string name="action_zoom_reset">Reset Zoom</string>
+
+    <!-- Misc UI -->
+    <string name="ui_package_hint">Package name</string>
+    <string name="menu_export_all">Export all manifests</string>
+    <string name="title_intent_list">Intents</string>
+    <string name="title_intent_detail">Alternative Apps</string>
+
+</resources>

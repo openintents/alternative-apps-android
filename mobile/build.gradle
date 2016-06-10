@@ -1,0 +1,51 @@
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.3'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.getkeepsafe.dexcount'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "org.openintents.alternativeapps"
+        minSdkVersion 11
+        targetSdkVersion 23
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/services/org.openrdf.query.parser.QueryParserFactory'
+        exclude 'META-INF/services/org.openrdf.sail.config.SailFactory'
+        exclude 'META-INF/maven/org.gagravarr/vorbis-java-core/pom.properties'
+        exclude 'META-INF/BCKEY.SF'
+    }
+}
+
+dependencies {
+    compile project(':androidLib')
+    compile project(':aXML')
+    compile files('libs/java-xmlbuilder-0.4.jar')
+    compile files('libs/java-json.jar')
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.google.firebase:firebase-database:9.0.2'
+    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile 'org.apache.commons:commons-csv:1.0'
+}

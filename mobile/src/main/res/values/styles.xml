@@ -1,0 +1,56 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AlternativeApps.Base" parent="@style/Theme.AppCompat.Light">
+        <item name="android:windowTitleBackgroundStyle">@style/AlternativeApps.Window.Title.Background</item>
+        <item name="android:windowTitleStyle">@style/AlternativeApps.Window.Title</item>
+    </style>
+
+    <style name="AlternativeApps.Base.Dialog" parent="@android:style/Theme.Dialog" />
+
+    <style name="AlternativeApps.Window.Title.Background">
+        <item name="android:background">@drawable/title_background</item>
+    </style>
+
+    <style name="AlternativeApps.Window.Title" parent="@android:style/Widget.TextView">
+        <item name="android:textAppearance">@style/AlternativeApps.Window.Title.Text</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">3</item>
+        <item name="android:shadowColor">#40400000</item>
+    </style>
+
+    <style name="AlternativeApps.Window.Title.Text" parent="@android:style/TextAppearance.StatusBar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AlternativeApps.Theme" parent="@style/AlternativeApps.Base">
+        <item name="android:listViewStyle">@style/AlternativeApps.ListView</item>
+        <item name="android:listViewWhiteStyle">@style/AlternativeApps.ListView.White</item>
+<!--         <item name="android:buttonStyle">@style/AlternativeApps.Button</item> -->
+<!--         <item name="android:imageButtonStyle">@style/AlternativeApps.ImageButton</item> -->
+    </style>
+
+    <style name="AlternativeApps.Dialog" parent="@style/AlternativeApps.Base.Dialog"></style>
+
+    <style name="AlternativeApps.ListView" parent="android:Widget.ListView">
+        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+    </style>
+
+    <style name="AlternativeApps.ListView.White" parent="android:Widget.ListView.White">
+        <item name="android:listSelector">@drawable/list_selector_holo_light</item>
+    </style>
+
+    <style name="AlternativeApps.Button" parent="android:Widget.Button">
+        <item name="android:background">@drawable/btn_default_holo_dark</item>
+        <item name="android:minHeight">32dip</item>
+        <item name="android:minWidth">64dip</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="AlternativeApps.ImageButton" parent="android:Widget.ImageButton">
+        <item name="android:background">@drawable/btn_default_holo_dark</item>
+    </style>
+
+</resources>
