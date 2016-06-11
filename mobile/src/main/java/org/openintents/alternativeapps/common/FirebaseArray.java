@@ -14,6 +14,8 @@ package org.openintents.alternativeapps.common;
  */
 
 
+import android.util.Log;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,8 +27,10 @@ import java.util.ArrayList;
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
+    private static final String TAG = "FirebaseArray";
+
     public interface OnChangedListener {
-        enum EventType {Added, Changed, Removed, Moved}
+        enum EventType {Added, Changed, Removed, Error, Moved}
 
         void onChanged(EventType type, int index, int oldIndex);
     }
@@ -97,7 +101,8 @@ class FirebaseArray implements ChildEventListener {
     }
 
     public void onCancelled(DatabaseError firebaseError) {
-        // TODO: what do we do with this?
+        Log.d(TAG, "firebase error ", firebaseError.toException());
+        notifyChangedListeners(OnChangedListener.EventType.Error, firebaseError.getCode());
     }
     // End of ChildEventListener methods
 

@@ -104,6 +104,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                     case Moved:
                         notifyItemMoved(oldIndex, index);
                         break;
+                    case Error:
+                        break;
                     default:
                         throw new IllegalStateException("Incomplete case statement");
                 }

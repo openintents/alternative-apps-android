@@ -18,6 +18,7 @@
     <item name="action_export_apk" type="id"/>
 
     <!-- App Item Context -->
+    <item name="action_remove_from_list" type="id"/>
     <item name="action_uninstall" type="id"/>
     <item name="action_display_info" type="id"/>
     <item name="action_explore_resources" type="id"/>

@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import org.openintents.alternativeapps.R;
+
+import java.net.URISyntaxException;
 
 /**
  * An activity representing a single Intent detail screen. This
@@ -16,6 +19,8 @@ import org.openintents.alternativeapps.R;
  * in a {@link IntentListActivity}.
  */
 public class IntentDetailActivity extends AppCompatActivity {
+
+    private static final String TAG = "IntentDetailActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +46,26 @@ public class IntentDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(IntentDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(IntentDetailFragment.ARG_ITEM_ID));
+            arguments.putString(IntentDetailFragment.ARG_ACTION,
+                    getAction());
             IntentDetailFragment fragment = new IntentDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.intent_detail_container, fragment)
                     .commit();
         }
+    }
+
+    private String getAction() {
+        if ("intent".equals(getIntent().getScheme())) {
+            try {
+                return Intent.parseUri(getIntent().getDataString(), Intent.URI_INTENT_SCHEME).getAction();
+            } catch (URISyntaxException e) {
+                Log.d(TAG, "Couldn't parse intent: " + getIntent().getDataString(), e);
+                return null;
+            }
+        }
+        return getIntent().getStringExtra(IntentDetailFragment.ARG_ACTION);
     }
 
     @Override

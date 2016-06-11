@@ -172,6 +172,7 @@ public final class ManifestUtils {
                 Element manifest = doc.getDocumentElement();
                 String packageName = findPackageName(manifest);
                 List<Node> intentFilters = findIntentFilters(doc);
+
                 RepositoryUtils.storeInDatabase(doc, packageName, intentFilters);
                 break;
             }

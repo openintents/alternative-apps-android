@@ -2,13 +2,15 @@ package org.openintents.alternativeapps.packageinfo.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -28,13 +30,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
+import android.widget.Toast;
 
 import org.openintents.alternativeapps.AboutActivity;
 import org.openintents.alternativeapps.PreferencesActivity;
@@ -46,15 +42,63 @@ import org.openintents.alternativeapps.common.Settings;
 import org.openintents.alternativeapps.packageinfo.ui.PackagesActivity;
 import org.openintents.alternativeapps.packageinfo.ui.adapter.PackageListAdapter;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 @SuppressLint("DefaultLocale")
 public class PackageListFragment extends Fragment implements
         OnItemClickListener, OnQueryTextListener {
+
+    private class ExportTask extends AsyncTask<List<PackageInfo>, Integer, Void> {
+
+        @Override
+        protected Void doInBackground(List<PackageInfo>... arrayOfPackageLists) {
+            List<PackageInfo> packages = arrayOfPackageLists[0];
+            PackageManager pm = mActivity.getPackageManager();
+            for (int i = 0, size = packages.size(); i < size; i++) {
+                PackageInfo packageInfo = packages.get(i);
+                if (isExportAllowed(packageInfo, pm)) {
+                    try {
+                        ManifestUtils.getManifest(packageInfo);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ParserConfigurationException e) {
+                        e.printStackTrace();
+                    }
+                }
+                publishProgress(i, size);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            if (getActivity() != null) {
+                if (values[0] % 10 == 0) {
+                    Toast.makeText(getActivity(),
+                            getString(R.string.export_progress, values[0], values[1]), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (getActivity() != null) {
+                Toast.makeText(getActivity(), R.string.export_finished, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     /**
      * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
      */
     @Override
-    public void onAttach(final Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         mActivity = (PackagesActivity) activity;
         mPackageManager = mActivity.getPackageManager();
@@ -131,6 +175,25 @@ public class PackageListFragment extends Fragment implements
         boolean refresh = false;
 
         switch (item.getItemId()) {
+            case R.id.action_share:
+                new android.support.v7.app.AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.title_start_export)
+                        .setMessage(R.string.export_hint)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                executeExportTask();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create().show();
+                break;
             case R.id.action_about:
                 startActivity(new Intent(mActivity, AboutActivity.class));
                 break;
@@ -164,6 +227,10 @@ public class PackageListFragment extends Fragment implements
             new Thread(mRefreshRunnable).start();
         }
         return result;
+    }
+
+    private void executeExportTask() {
+        new ExportTask().execute(mPackages);
     }
 
     /**
@@ -203,6 +270,10 @@ public class PackageListFragment extends Fragment implements
         boolean res = true;
 
         switch (item.getItemId()) {
+            case R.id.action_remove_from_list:
+                mPackages.remove(mSelectedPackage);
+                mAdapter.notifyDataSetChanged();
+                break;
             case R.id.action_uninstall:
                 startActivity(PackageUtils.uninstallPackageIntent(mSelectedPackage));
                 break;
@@ -276,9 +347,7 @@ public class PackageListFragment extends Fragment implements
         final PackageManager pm = mActivity.getPackageManager();
         final List<PackageInfo> packages = pm.getInstalledPackages(0);
 
-        if (Settings.sIgnoreSystemPackages) {
-            filterPackages(packages);
-        }
+        filterPackages(packages);
 
         Collections.sort(packages, Constants.getComparator(pm, mSortMethod));
 
@@ -293,21 +362,6 @@ public class PackageListFragment extends Fragment implements
         });
     }
 
-    private void exportAllPackages(List<PackageInfo> packages) {
-        PackageManager pm = mActivity.getPackageManager();
-        for (int i = 0, size = packages.size(); i < size; i++) {
-            PackageInfo packageInfo = packages.get(i);
-            if (isExportAllowed(packageInfo, pm)) {
-                try {
-                    ManifestUtils.getManifest(packageInfo);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     private boolean isExportAllowed(PackageInfo packageInfo, PackageManager pm) {
         return pm.getInstallerPackageName(packageInfo.packageName) != null;
@@ -327,7 +381,8 @@ public class PackageListFragment extends Fragment implements
 
             if (appInfo != null) {
                 flags = appInfo.flags;
-                if ((flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+                if (!isExportAllowed(pkg, mPackageManager) || (Settings.sIgnoreSystemPackages &&
+                        (flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM)) {
                     remove.add(pkg);
                 }
             }

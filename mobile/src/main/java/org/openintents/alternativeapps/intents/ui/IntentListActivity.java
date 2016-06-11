@@ -92,7 +92,7 @@ public class IntentListActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         if (mTwoPane) {
                             Bundle arguments = new Bundle();
-                            arguments.putString(IntentDetailFragment.ARG_ITEM_ID, holder.mItem.action);
+                            arguments.putString(IntentDetailFragment.ARG_ACTION, holder.mItem.action);
                             IntentDetailFragment fragment = new IntentDetailFragment();
                             fragment.setArguments(arguments);
                             getSupportFragmentManager().beginTransaction()
@@ -101,7 +101,7 @@ public class IntentListActivity extends AppCompatActivity {
                         } else {
                             Context context = v.getContext();
                             Intent intent = new Intent(context, IntentDetailActivity.class);
-                            intent.putExtra(IntentDetailFragment.ARG_ITEM_ID, holder.mItem.action);
+                            intent.putExtra(IntentDetailFragment.ARG_ACTION, holder.mItem.action);
 
                             context.startActivity(intent);
                         }

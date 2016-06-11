@@ -4,6 +4,7 @@ package org.openintents.alternativeapps.common;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -53,7 +54,7 @@ public class RepositoryUtils {
 
         // storeMicrodataForPackageInDatabase(packageName, ref);
 
-
+        Log.d(TAG, "storing " + packageName);
         Element element = doc.getDocumentElement();
         DatabaseReference childRef = ref.child(element.getTagName()).child(packageName.replace('.', '_'));
 
@@ -96,7 +97,7 @@ public class RepositoryUtils {
             activityName = nameAttribute.getNodeValue();
         }
         Node exported = activityNode.getAttributes().getNamedItemNS(ANDROID_NAME_SPACE, "exported");
-        if (versionCode != null && exported != null && "true".equals(exported.getNodeValue())) {
+        if (versionCode != null && (exported == null || "true".equals(exported.getNodeValue()))) {
             DatabaseReference packageRef = firebase.child("packages").child(packageNameAsKey);
             packageRef.child(versionCode).setValue(activityName);
             packageRef.child("packageName").setValue(packageName);
@@ -119,8 +120,13 @@ public class RepositoryUtils {
     private static void setValues(Element element, DatabaseReference childRef, SparsePackageInfo packageInfo) {
         boolean updatePackageInfo = "manifest".equals(element.getTagName());
         for (int i = 0, size = element.getAttributes().getLength(); i < size; i++) {
-            Node attr = element.getAttributes().item(i);
-            childRef.child(attr.getNodeName()).setValue(attr.getNodeValue());
+            final Node attr = element.getAttributes().item(i);
+            childRef.child(attr.getNodeName()).setValue(attr.getNodeValue()).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "Couldn't set " + attr.getNodeName() + " " + attr.getNodeValue(), e);
+                }
+            });
             if (updatePackageInfo) {
                 if ("package".equals(attr.getNodeName())) {
                     packageInfo.setPackage(attr.getNodeValue());

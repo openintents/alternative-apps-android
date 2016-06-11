@@ -16,10 +16,10 @@
         android:uiOptions="splitActionBarWhenNarrow">
 
         <!-- Packages List -->
-        <activity android:name="org.openintents.alternativeapps.packageinfo.ui.PackagesActivity">
+        <activity android:name="org.openintents.alternativeapps.packageinfo.ui.PackagesActivity"
+            android:label="@string/title_packages">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -62,6 +62,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.openintents.alternativeapps.intents.ui.IntentListActivity" />
+            <intent-filter>
+                <action android:name="org.openintents.action.RESOLVE_UNRESOLVED_INTENT"/>
+                <data android:scheme="intent"/>
+            </intent-filter>
         </activity>
     </application>
 

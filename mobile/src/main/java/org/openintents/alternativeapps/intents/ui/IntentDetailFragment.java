@@ -37,7 +37,7 @@ public class IntentDetailFragment extends android.support.v4.app.Fragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ACTION = "action";
     private static final String TAG = "IntentDetailFragment";
 
     private RecyclerView packageListView;
@@ -66,8 +66,8 @@ public class IntentDetailFragment extends android.support.v4.app.Fragment {
         packageListView.setLayoutManager(layoutManager);
         adapter = new SimpleItemRecyclerViewAdapter();
         packageListView.setAdapter(adapter);
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            String action = getArguments().getString(ARG_ITEM_ID);
+        if (getArguments().containsKey(ARG_ACTION)) {
+            String action = getArguments().getString(ARG_ACTION);
             IntentSpecification spec = getSpecForAction(action);
             if (spec != null) {
                 updateUI(spec);

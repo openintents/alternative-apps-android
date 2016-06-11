@@ -40,5 +40,12 @@
     <string name="menu_export_all">Export all manifests</string>
     <string name="title_intent_list">Intents</string>
     <string name="title_intent_detail">Alternative Apps</string>
+    <string name="title_packages">Installed Apps</string>
+    <string name="action_remove_from_list">Remove from list</string>
+    <string name="export_started">Export started</string>
+    <string name="export_finished">Export finished</string>
+    <string name="export_progress">Exported: %1$d/%2$d</string>
+    <string name="title_start_export">Privacy warning</string>
+    <string name="export_hint">Anonymous information about your installed apps are transferred to the database of OpenIntents. Would you like to continue?</string>
 
 </resources>
